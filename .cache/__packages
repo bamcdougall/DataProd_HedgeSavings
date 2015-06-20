@@ -1,0 +1,13 @@
+base
+slidify
+knitr
+stringr
+DiagrammeR
+ggplot2
+gridExtra
+gtable
+lubridate
+dplyr
+Cairo
+animation
+htmlwidgets
