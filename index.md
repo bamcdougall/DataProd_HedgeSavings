@@ -1,5 +1,5 @@
 ---
-title       : Investment - Delta Hedge Fund vs Savings Account
+title       : Comparative Investing - Delta Hedge Fund vs Savings Account
 subtitle    : Market vs Best Available Bank Rate
 author      : B.A. McDougall
 job         : NSCI Consulting
@@ -11,19 +11,6 @@ mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 ---
 
-## Definitions from Finance
-* **Stock** An asset representing partial ownership of a publicly traded firm.
-* **American Option** Right to buy (long) or sell (short) an asset at strike price $S_k$ at any time until maturity for a premium.
-* **European Option** Right to buy (long) or sell (short) an asset at strike price $S_k$ at maturity for a premium.
-* **Call Option** Option to buy an asset at strike price $S_k$ at maturity for a premium.
-* **Put Option** Option to sell an asset at strike price $S_k$ at maturity for a premium.
-
-## Savings Account: Limit of continuous compounding
-* $r =$ risk free interest rate; $PV =$ Present Value of Money; $FV =$ Future Value of Money
-* With annual compounding, $FV_1 = PV (1 + r) \Longrightarrow FV_t = PV(1+\frac{r}{n})^{nt}$
-* In limit of decreasing time intervals, $FV_t = \lim_{n\to\infty} PV(1+\frac{r}{n})^{\frac{n}{r} rt} = PV e^{rt}$
-
----
 ## Portfolio Management
 
 ### Generate Risk Neutral Valued (RNV) Portfolio using [Binary Tree Model](https://en.wikipedia.org/wiki/Binomial_options_pricing_model)
@@ -75,8 +62,34 @@ p = \frac{e^{r t} - d}{u - d}
 
 * Solving numerically, $\Delta S = \mu S \Delta t + \sigma S \epsilon \sqrt{\Delta t}$, so $S_{i + 1} = S_i + \mu S_i \Delta t + \sigma S_i \epsilon \sqrt{\Delta t}$
 
-* Numerical simulation and actual stock price of Google (Dates:  1/2/2015 - 6/12/2015).  Plot also shows savings account (best interest $r=1.25\%$) & a $\Delta$ Hedge with Google stock (market rate $\mu= 6.28 \%$ &
+
+
+
+
+
+
+
+```r
+## This code chunk demonstrates pricing Google Stock assuming a Wiener process.
+for(j in 1:30) {
+    for(i in 2:112) {
+        #     set.seed(314159)
+        goog_W[i] <- goog_W[i-1] * (1 + mu_daily * (1/365) + sd_googlDly * rnorm(1) * sqrt(1/365)) 
+        }
+    }
+print(paste('On 12 June 2015, the simulated closing price of Google Stock is $', round(goog_W[112],2)))
+```
+
+```
+## [1] "On 12 June 2015, the simulated closing price of Google Stock is $ 519.9"
+```
+* Code chunk numerically integrates the opening Google stock price on 2 Jan 2015 of $532.60 through 112 trading days until 12 June 2015
+
+---
+## Animation of Pricing a Stock Using a Wiener Process
+* Numerical simulation and actual stock price of Google (Dates:  1/2/2015 - 6/12/2015).
+* Plot also shows savings account (best interest $r=1.25\%$) & a $\Delta$ Hedge with Google stock (market rate $\mu= 6.28 \%$ &
 $ \sigma = $ \$41.)
 
-<video   controls loop><source src="assets/fig/stockPricing-.webm" />video of chunk stockPricing</video>
-* Animation demonstrates stochastic nature of stock pricing.  Each simulation presents a valid solution.
+<video   controls loop><source src="assets/fig/stockPricingAnimating-.webm" />video of chunk stockPricingAnimating</video>
+* Animation demonstrates stochastic nature of stock pricing

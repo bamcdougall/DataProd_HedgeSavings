@@ -1,8 +1,8 @@
 base
 slidify
-knitr
 stringr
 DiagrammeR
+knitr
 ggplot2
 gridExtra
 gtable
@@ -11,3 +11,4 @@ dplyr
 Cairo
 animation
 htmlwidgets
+devtools

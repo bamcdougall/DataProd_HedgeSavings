@@ -1,5 +1,5 @@
 ---
-title       : Investment - Delta Hedge Fund vs Savings Account
+title       : Comparative Investing - Delta Hedge Fund vs Savings Account
 subtitle    : Market vs Best Available Bank Rate
 author      : B.A. McDougall
 job         : NSCI Consulting
@@ -11,19 +11,6 @@ mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 ---
 
-## Definitions from Finance
-* **Stock** An asset representing partial ownership of a publicly traded firm.
-* **American Option** Right to buy (long) or sell (short) an asset at strike price $S_k$ at any time until maturity for a premium.
-* **European Option** Right to buy (long) or sell (short) an asset at strike price $S_k$ at maturity for a premium.
-* **Call Option** Option to buy an asset at strike price $S_k$ at maturity for a premium.
-* **Put Option** Option to sell an asset at strike price $S_k$ at maturity for a premium.
-
-## Savings Account: Limit of continuous compounding
-* $r =$ risk free interest rate; $PV =$ Present Value of Money; $FV =$ Future Value of Money
-* With annual compounding, $FV_1 = PV (1 + r) \Longrightarrow FV_t = PV(1+\frac{r}{n})^{nt}$
-* In limit of decreasing time intervals, $FV_t = \lim_{n\to\infty} PV(1+\frac{r}{n})^{\frac{n}{r} rt} = PV e^{rt}$
-
----
 ## Portfolio Management
 
 ### Generate Risk Neutral Valued (RNV) Portfolio using [Binary Tree Model](https://en.wikipedia.org/wiki/Binomial_options_pricing_model)
@@ -75,10 +62,57 @@ p = \frac{e^{r t} - d}{u - d}
 
 * Solving numerically, $\Delta S = \mu S \Delta t + \sigma S \epsilon \sqrt{\Delta t}$, so $S_{i + 1} = S_i + \mu S_i \Delta t + \sigma S_i \epsilon \sqrt{\Delta t}$
 
-* Numerical simulation and actual stock price of Google (Dates:  1/2/2015 - 6/12/2015).  Plot also shows savings account (best interest $r=1.25\%$) & a $\Delta$ Hedge with Google stock (market rate $\mu= 6.28 \%$ &
-$ \sigma = $ \$41.)
+```{r libraryLoad, echo=FALSE, warning=FALSE, results='hide', message=FALSE}
+# require(stringr)
+# require(DiagrammeR)
+require(slidify)
+require(knitr)
+require(ggplot2)
+# require(grid)
+# require(gridExtra)
+# require(gtable)
+require(lubridate)
+library(dplyr)
+# library(Cairo)
+library(animation)
+library(htmlwidgets)
+ani.options(interval=.6)
+```
 
-```{r stockPricing, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE, fig.height=3, fig.width=12, fig.show='animate'}
+```{r fvMoney, echo=FALSE, cache=FALSE, warning=FALSE, message=FALSE, fig.height=5, fig.width=12, fig.cap="Time Value of Money"}
+aprAnn = 0.0125 #https://www.mysavingsdirect.com/MySavingsDirectWeb/en/common/information/LearnMore.jsp
+aprDay = aprAnn / yday(mdy("12/31/2015"))
+aprMnth = aprAnn / 12
+aprQtr = aprAnn / 4
+
+finGrowthTblMnth <- tbl_df(as.data.frame( ymd_hms("2015-01-01 16:00:00", tz = "America/New_York") + months(1:120) - days(1) ))
+names(finGrowthTblMnth) <- "dateClose"
+finGrowthTblMnth <- finGrowthTblMnth%>%
+    dplyr::mutate(
+        ydayNum = yday(dateClose),
+        month = month(dateClose),
+        years = as.period( (dateClose - ymd_hms("2015-01-02 16:00:00", tz = "America/New_York") ) ) %/% months(12),
+        quarters = as.period( (dateClose - ymd_hms("2015-01-02 16:00:00", tz = "America/New_York") ) ) %/% months(3),
+        months = as.period( (dateClose - ymd_hms("2015-01-02 16:00:00", tz = "America/New_York") ) ) %/% months(1),
+        days = as.period( (dateClose - ymd_hms("2015-01-02 16:00:00", tz = "America/New_York") ) ) %/% days(1),
+        Savings = (532.60 * (1 + aprDay)**(days)),
+        Contin = (532.60 * exp( aprDay * days) ),
+        Mnthly = (532.60 * (1 + aprMnth)**(months)),
+        Qtrly = (532.60 * (1 + aprQtr)**(quarters)),
+        Annul = (532.60 * (1 + aprAnn)**(years))
+        )
+
+# mnyPlt2 <- ggplot() + scale_colour_hue("Compound_Rate")
+# mnyPlt2 <- mnyPlt2 + geom_line(data=finGrowthTblMnth, aes(x = dateClose, y = Contin, color = "1_Contin"))
+# mnyPlt2 <- mnyPlt2 + geom_line(data=finGrowthTblMnth, aes(x = dateClose, y = Savings, color = "2_Daily"))
+# mnyPlt2 <- mnyPlt2 + geom_line(data=finGrowthTblMnth, aes(x = dateClose, y = Mnthly, color = "3_Mnthly"))
+# mnyPlt2 <- mnyPlt2 + geom_line(data=finGrowthTblMnth, aes(x = dateClose, y = Qtrly, color = "4_Qtrly"))
+# mnyPlt2 <- mnyPlt2 + geom_line(data=finGrowthTblMnth, aes(x = dateClose, y = Annul, color = "5_Annul"))
+# mnyPlt2 <- mnyPlt2 + labs(x = "Date", y = "Amount [$]", title = "Money:  Time Value", legend = "Compounding")
+# mnyPlt2
+```
+
+```{r stockPricingPrep, echo=FALSE, message=FALSE, warning=FALSE, cache=FALSE}
 ################################################################################
 ##
 ## This section is for comparing Google Stock Price with Wiener Pricing of Stock
@@ -134,8 +168,32 @@ sd_googlDly <-  sd_googl / 112
 
 goog_W <- vector("numeric", length = 112)
 goog_W[1] <- 532.60
+```
 
+```{r stockPricing, echo=TRUE, message=TRUE, warning=TRUE, error=TRUE, cache=FALSE}
+## This code chunk demonstrates pricing Google Stock assuming a Wiener process.
+for(j in 1:30) {
+    for(i in 2:112) {
+        #     set.seed(314159)
+        goog_W[i] <- goog_W[i-1] * (1 + mu_daily * (1/365) + sd_googlDly * rnorm(1) * sqrt(1/365)) 
+        }
+    }
+print(paste('On 12 June 2015, the simulated closing price of Google Stock is $', round(goog_W[112],2)))
+```
+* Code chunk numerically integrates the opening Google stock price on 2 Jan 2015 of $532.60 through 112 trading days until 12 June 2015
 
+---
+## Animation of Pricing a Stock Using a Wiener Process
+* Numerical simulation and actual stock price of Google (Dates:  1/2/2015 - 6/12/2015).
+* Plot also shows savings account (best interest $r=1.25\%$) & a $\Delta$ Hedge with Google stock (market rate $\mu= 6.28 \%$ &
+$ \sigma = $ \$41.)
+
+```{r stockPricingAnimating, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE, fig.height=5, fig.width=12, fig.show='animate'}
+################################################################################
+##
+## This section is for comparing Google Stock Price with Wiener Pricing of Stock
+##  For comparison, bank savings is shown.  Import Google price history. 
+##
 for(j in 1:30) {
     for(i in 2:112) {
         #     set.seed(314159)
@@ -152,4 +210,4 @@ for(j in 1:30) {
     print(mnyPlt)
     }
 ```
-* Animation demonstrates stochastic nature of stock pricing.  Each simulation presents a valid solution.
+* Animation demonstrates stochastic nature of stock pricing

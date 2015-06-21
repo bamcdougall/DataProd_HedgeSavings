@@ -1,0 +1,30 @@
+---
+title       : Derivative and Stock Pricing
+subtitle    : Binomial Tree Model and Wiener Process
+author      : B.A. McDougall
+job         : NSCI Consulting
+date        : Wednesday, 17 June 2015
+output      : html_document
+---
+
+##Abstract
+
+This GitHub Repository contains **n** primary files:
+
+- ReadMe.md (this file);
+- index.html;
+- CodeBook.md;
+- $\ldots$
+
+
+##File Description
+
+**ReadMe** provides a high-level description of the files in this GitHub Repository.
+
+**index.html** is the output from *Slidify* of the R Markdown file index.Rmd
+
+**CodeBook.md** provides a brief summary of background information required for understanding index.Rmd.
+
+##Use of **index.html**
+
+Use of **index.html** is intended from the gh-pages branch.  The file provides a brief model of a two-step binomial pricing model for a call option linked to its underlying stock.

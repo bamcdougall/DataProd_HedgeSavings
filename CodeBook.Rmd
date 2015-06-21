@@ -1,0 +1,42 @@
+---
+title       : Derivative and Stock Pricing
+subtitle    : Binomial Tree Model and Wiener Process
+author      : B.A. McDougall
+job         : NSCI Consulting
+date        : Wednesday, 17 June 2015
+output      : html_document
+---
+
+##Abstract
+
+
+
+##Method:
+
+1.
+2.
+3.
+4.
+
+
+***
+
+###Data Set Information:
+
+
+
+
+###Attribute Information:
+
+
+
+##Data Processing
+
+
+##Results
+
+
+
+##References
+
+[1] Hull, John C, Options, Futures, And Other Derivatives, 8th ed., Pearson, London (2012).

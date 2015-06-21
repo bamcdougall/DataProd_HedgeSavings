@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Investment - Delta Hedge Fund vs Savings Account</title>
+  <title>Comparative Investing - Delta Hedge Fund vs Savings Account</title>
   <meta charset="utf-8">
-  <meta name="description" content="Investment - Delta Hedge Fund vs Savings Account">
+  <meta name="description" content="Comparative Investing - Delta Hedge Fund vs Savings Account">
   <meta name="author" content="B.A. McDougall">
   <meta name="generator" content="slidify" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,7 +33,7 @@
     <!-- LOGO SLIDE -->
         <slide class="title-slide segue nobackground">
   <hgroup class="auto-fadein">
-    <h1>Investment - Delta Hedge Fund vs Savings Account</h1>
+    <h1>Comparative Investing - Delta Hedge Fund vs Savings Account</h1>
     <h2>Market vs Best Available Bank Rate</h2>
     <p>B.A. McDougall<br/>NSCI Consulting</p>
   </hgroup>
@@ -43,31 +43,6 @@
 
     <!-- SLIDES -->
     <slide class="" id="slide-1" style="background:;">
-  <hgroup>
-    <h2>Definitions from Finance</h2>
-  </hgroup>
-  <article data-timings="">
-    <ul>
-<li><strong>Stock</strong> An asset representing partial ownership of a publicly traded firm.</li>
-<li><strong>American Option</strong> Right to buy (long) or sell (short) an asset at strike price \(S_k\) at any time until maturity for a premium.</li>
-<li><strong>European Option</strong> Right to buy (long) or sell (short) an asset at strike price \(S_k\) at maturity for a premium.</li>
-<li><strong>Call Option</strong> Option to buy an asset at strike price \(S_k\) at maturity for a premium.</li>
-<li><strong>Put Option</strong> Option to sell an asset at strike price \(S_k\) at maturity for a premium.</li>
-</ul>
-
-<h2>Savings Account: Limit of continuous compounding</h2>
-
-<ul>
-<li>\(r =\) risk free interest rate; \(PV =\) Present Value of Money; \(FV =\) Future Value of Money</li>
-<li>With annual compounding, \(FV_1 = PV (1 + r) \Longrightarrow FV_t = PV(1+\frac{r}{n})^{nt}\)</li>
-<li>In limit of decreasing time intervals, \(FV_t = \lim_{n\to\infty} PV(1+\frac{r}{n})^{\frac{n}{r} rt} = PV e^{rt}\)</li>
-</ul>
-
-  </article>
-  <!-- Presenter Notes -->
-</slide>
-
-<slide class="" id="slide-2" style="background:;">
   <hgroup>
     <h2>Portfolio Management</h2>
   </hgroup>
@@ -99,7 +74,7 @@ p = \frac{e^{r t} - d}{u - d}
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-3" style="background:;">
+<slide class="" id="slide-2" style="background:;">
   <hgroup>
     <h2>Portfolio Management (continued)</h2>
   </hgroup>
@@ -138,7 +113,7 @@ p = \frac{e^{r t} - d}{u - d}
   <!-- Presenter Notes -->
 </slide>
 
-<slide class="" id="slide-4" style="background:;">
+<slide class="" id="slide-3" style="background:;">
   <hgroup>
     <h2>Time Dependence of \(S\)</h2>
   </hgroup>
@@ -146,14 +121,44 @@ p = \frac{e^{r t} - d}{u - d}
     <ul>
 <li><p>The differential of stock price is \(d S = \mu S d t + \sigma S \epsilon \sqrt{dt}\). Neglecting volatility, \(S(t) = S_o e^{\mu t}\).</p></li>
 <li><p>Solving numerically, \(\Delta S = \mu S \Delta t + \sigma S \epsilon \sqrt{\Delta t}\), so \(S_{i + 1} = S_i + \mu S_i \Delta t + \sigma S_i \epsilon \sqrt{\Delta t}\)</p></li>
-<li><p>Numerical simulation and actual stock price of Google (Dates:  1/2/2015 - 6/12/2015).  Plot also shows savings account (best interest \(r=1.25\%\)) &amp; a \(\Delta\) Hedge with Google stock (market rate \(\mu= 6.28 \%\) &amp;
-$ \sigma = $ $41.)</p></li>
 </ul>
 
-<p><video   controls loop><source src="assets/fig/stockPricing-.webm" />video of chunk stockPricing</video></p>
+<pre><code class="r">## This code chunk demonstrates pricing Google Stock assuming a Wiener process.
+for(j in 1:30) {
+    for(i in 2:112) {
+        #     set.seed(314159)
+        goog_W[i] &lt;- goog_W[i-1] * (1 + mu_daily * (1/365) + sd_googlDly * rnorm(1) * sqrt(1/365)) 
+        }
+    }
+print(paste(&#39;On 12 June 2015, the simulated closing price of Google Stock is $&#39;, round(goog_W[112],2)))
+</code></pre>
+
+<pre><code>## [1] &quot;On 12 June 2015, the simulated closing price of Google Stock is $ 519.9&quot;
+</code></pre>
 
 <ul>
-<li>Animation demonstrates stochastic nature of stock pricing.  Each simulation presents a valid solution.</li>
+<li>Code chunk numerically integrates the opening Google stock price on 2 Jan 2015 of $532.60 through 112 trading days until 12 June 2015</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Animation of Pricing a Stock Using a Wiener Process</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>Numerical simulation and actual stock price of Google (Dates:  1/2/2015 - 6/12/2015).</li>
+<li>Plot also shows savings account (best interest \(r=1.25\%\)) &amp; a \(\Delta\) Hedge with Google stock (market rate \(\mu= 6.28 \%\) &amp;
+$ \sigma = $ $41.)</li>
+</ul>
+
+<p><video   controls loop><source src="assets/fig/stockPricingAnimating-.webm" />video of chunk stockPricingAnimating</video></p>
+
+<ul>
+<li>Animation demonstrates stochastic nature of stock pricing</li>
 </ul>
 
   </article>
@@ -166,25 +171,25 @@ $ \sigma = $ $41.)</p></li>
     <ul>
       <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=1 title='Definitions from Finance'>
+        data-slide=1 title='Portfolio Management'>
          1
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='Portfolio Management'>
+        data-slide=2 title='Portfolio Management (continued)'>
          2
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Portfolio Management (continued)'>
+        data-slide=3 title='Time Dependence of \(S\)'>
          3
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=4 title='Time Dependence of \(S\)'>
+        data-slide=4 title='Animation of Pricing a Stock Using a Wiener Process'>
          4
       </a>
     </li>
